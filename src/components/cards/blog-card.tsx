@@ -6,14 +6,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
+import { formatDate } from "../../utils/format-date";
 interface BlogcardProps {
+  key: string;
   title: string;
   content: string;
-  date: string;
+  date: Date;
 }
 
 export default function Blogcard({ title, content, date }: BlogcardProps) {
+  const formattedDate = formatDate(date);
   return (
     <>
       <Card className="">
@@ -23,7 +25,9 @@ export default function Blogcard({ title, content, date }: BlogcardProps) {
 
         <CardContent>{content}</CardContent>
 
-        <CardFooter className="flex justify-end text-[14px]">{date}</CardFooter>
+        <CardFooter className="flex justify-end text-[14px]">
+          {formattedDate}
+        </CardFooter>
       </Card>
     </>
   );
