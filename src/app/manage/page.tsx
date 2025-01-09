@@ -1,10 +1,10 @@
  import Blogcard from "@/components/cards/blog-card";
 import React from "react";
 import Search from "@/components/search/search";
-import Addbtn from "./components/add-btn";
-import Editbtn from "./components/edit-btn";
 import Deletebtn from "./components/delete-btn";
-/* import BlogForm from "@/components/forms/blog-form"; */
+import CreateDialog from "@/components/dialogs/create-dialog";
+import EditDialog from "@/components/dialogs/edit-dialog";
+
 
 
 export default async function Page() {
@@ -29,34 +29,75 @@ export default async function Page() {
         <Search />
           </div>
  <div className="w-[100%] flex  pt-5">
-        <Addbtn />
+ <CreateDialog/>
           </div>
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8 lg:gap-5 pt-10">
 
-{blogs.map(
-              (blog: {
-                id: string;
-                title: string;
-                content: string;
-                date: Date;
-              }) => (
-                <div key={blog.id} className="relative ">
-               <Blogcard
-                                key={blog.id}
-                                title={blog.title}
-                                content={blog.content}
-                                date={new Date(blog.date)}
-                              />
-                <div className="absolute text-black  top-[-10%] right-20"><Editbtn /></div>
-                <div className="absolute text-black  top-[-10%] right-0"><Deletebtn /></div>
-                </div>
-              )
-            )}
+          {/* {blogs
+  .sort((a: { date: string }, b: { date: string }) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  .map(
+    (blog: {
+      id: string;
+      title: string;
+      content: string;
+      date: Date;
+    }) => (
+      <div key={blog.id} className="relative ">
+        <Blogcard
+          key={blog.id}
+          title={blog.title}
+          content={blog.content}
+          date={new Date(blog.date)}
+        />
+        <div className="absolute text-black top-[-10%] right-20">
+          <Editbtn />
+        </div>
+        <div className="absolute text-black top-[-10%] right-0">
+          <Deletebtn />
+        </div>
+      </div>
+    )
+  )} */}
+
+{blogs
+  .slice()
+  .reverse()
+  .map(
+    (blog: {
+      id: string;
+      title: string;
+      content: string;
+      date: Date;
+    }) => (
+      <div key={blog.id} className="relative ">
+        <Blogcard
+          key={blog.id}
+          title={blog.title}
+          content={blog.content}
+          date={new Date(blog.date)}
+        />
+        <div className="absolute text-black top-[-10%] right-20">
+        <EditDialog
+          id={blog.id}
+          title={blog.title}
+          content={blog.content}
+          date={new Date(blog.date)}
+        />
+        </div>
+        <div className="absolute text-black top-[-10%] right-0">
+          <Deletebtn id={blog.id}
+          title={blog.title}
+          content={blog.content}
+          date={new Date(blog.date)}/>
+        </div>
+      </div>
+    )
+  )}
 
           </div>
         </div>
 
-       {/*  <BlogForm /> */}
+
       </div>
     </>
   );
