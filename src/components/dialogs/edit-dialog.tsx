@@ -1,13 +1,13 @@
 import React from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import BlogForm from "../forms/blog-form"
-import { Button } from "../ui/button"
+import Editbtn from "@/app/manage/components/edit-btn"
 
-const EditDialog = () => {
+export default function EditDialog() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button type="submit">Edit</Button>
+                <Editbtn />
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -19,5 +19,3 @@ const EditDialog = () => {
         </Dialog>
     )
 }
-
-export default EditDialog
