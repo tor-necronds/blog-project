@@ -6,15 +6,11 @@ import CreateDialog from "@/components/dialogs/create-dialog";
 import EditDialog from "@/components/dialogs/edit-dialog";
 
 
-
 export default async function Page() {
+    const data = await fetch("https://677e3ae094bde1c1252affe2.mockapi.io/blogs")
+    const blogs = await data.json()
 
-
-  const data = await fetch('https://677e3ae094bde1c1252affe2.mockapi.io/blogs')
-  const blogs = await data.json()
-
-  console.log(blogs)
-
+    console.log(blogs)
 
   return (
     <>

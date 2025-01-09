@@ -32,5 +32,3 @@ export default function EditDialog({ id, title, content, date }:EditDialogProps)
         </Dialog>
     )
 }
-
-
