@@ -2,13 +2,17 @@ import Blogcard from "@/components/cards/blog-card";
 import React from "react";
 import Dropdown from "@/components/dropdown/dropdown";
 import Counting from "./components/counting";
+/* import FormatDate from '../../utils/format-date' */
+export default async function Page() {
+  const data = await fetch("https://677e3ae094bde1c1252affe2.mockapi.io/blogs");
+  const blogs = await data.json();
 
-export default function Page() {
-  const blogData: { title: string; content: string; date: string } = {
+  console.log(blogs);
+  /* const blogData: { title: string; content: string; date: string } = {
     title: "My First Blog Post",
     content: "This is the content of my blog post...",
     date: "19 JAN 2025",
-  };
+  }; */
   return (
     <>
       <div className="flex justify-center">
@@ -23,41 +27,21 @@ export default function Page() {
           </div>
 
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 pt-10">
-            <Blogcard
-              title={blogData.title}
-              content={blogData.content}
-              date={blogData.date}
-            />
-
-            <Blogcard
-              title={blogData.title}
-              content={blogData.content}
-              date={blogData.date}
-            />
-
-            <Blogcard
-              title={blogData.title}
-              content={blogData.content}
-              date={blogData.date}
-            />
-
-            <Blogcard
-              title={blogData.title}
-              content={blogData.content}
-              date={blogData.date}
-            />
-
-            <Blogcard
-              title={blogData.title}
-              content={blogData.content}
-              date={blogData.date}
-            />
-
-            <Blogcard
-              title={blogData.title}
-              content={blogData.content}
-              date={blogData.date}
-            />
+            {blogs.map(
+              (blog: {
+                id: string;
+                title: string;
+                content: string;
+                date: Date;
+              }) => (
+                <Blogcard
+                  key={blog.id}
+                  title={blog.title}
+                  content={blog.content}
+                  date={new Date(blog.date)}
+                />
+              )
+            )}
           </div>
         </div>
       </div>

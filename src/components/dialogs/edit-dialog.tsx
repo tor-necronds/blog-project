@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import BlogForm from "../forms/blog-form"
 import { Button } from "../ui/button"
 
-const EditDialog = () => {
+export default function EditDialog() {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -20,4 +20,4 @@ const EditDialog = () => {
     )
 }
 
-export default EditDialog
+
