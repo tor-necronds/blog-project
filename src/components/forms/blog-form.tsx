@@ -1,6 +1,6 @@
 "use client"
 
-import React,{useState} from "react"
+import React, { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "../ui/textarea"
@@ -10,7 +10,6 @@ import { Calendar as CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-
 
 export default function BlogForm() {
     const [date, setDate] = useState<Date>()
@@ -59,8 +58,4 @@ export default function BlogForm() {
             </div>
         </form>
     )
-  }
-
-
-
-
+}

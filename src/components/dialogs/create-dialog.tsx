@@ -3,12 +3,13 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import BlogForm from "../forms/blog-form"
 import { Button } from "../ui/button"
 
-
-export default function CreateDialog () {
+export default function CreateDialog() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button type="submit">Add</Button>
+                <Button variant="outline" type="submit">
+                    Add Blog
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -20,4 +21,3 @@ export default function CreateDialog () {
         </Dialog>
     )
 }
-
