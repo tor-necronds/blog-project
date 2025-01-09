@@ -1,9 +1,11 @@
-
+import { redirect } from "next/navigation";
 
 export default function Home() {
+  redirect("/blogs");
   return (
     <>
-    ทดสอบ Push git 555 123
+
+
     </>
   );
 }
