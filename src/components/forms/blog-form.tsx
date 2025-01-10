@@ -10,15 +10,11 @@ import { Calendar as CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-<<<<<<< HEAD
 import SaveBtn from "../buttons/save-btn"
-=======
->>>>>>> 6b9cf5f289bd46947eef981d6b0b5bb3742d0722
 
 export default function BlogForm() {
     const [date, setDate] = useState<Date>()
 
-    
     return (
         <form>
             <div className="grid gap-5">
