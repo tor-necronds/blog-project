@@ -21,12 +21,84 @@ const initialState = {
     errors: null as z.ZodError | null,
 }
 
+type TouchedFields = {
+    title: boolean
+    content: boolean
+    date: boolean
+}
+
 export default function CreateForm() {
     const [state, formAction] = useActionState(createBlog, initialState)
     const [clientErrors, setClientErrors] = useState<z.ZodError | null>(null)
     const [title, setTitle] = useState<string>("")
     const [content, setContent] = useState<string>("")
     const [date, setDate] = useState<Date>()
+    const [touched, setTouched] = useState<TouchedFields>({
+        title: false,
+        content: false,
+        date: false,
+    })
+
+    const validateField = (field: keyof TouchedFields, value: any) => {
+        const dataToValidate = {
+            title: field === "title" ? value : title,
+            content: field === "content" ? value : content,
+            date: field === "date" ? (value ? value.toISOString() : "") : date ? date.toISOString() : "",
+        }
+
+        const validationResult = blogSchema.safeParse(dataToValidate)
+
+        if (!validationResult.success) {
+            const fieldError = validationResult.error.errors.find((err) => err.path.includes(field))
+            if (fieldError) {
+                setClientErrors(validationResult.error)
+            } else {
+                // If no error for this field, remove related errors
+                const newErrors = clientErrors?.errors.filter((err) => !err.path.includes(field))
+                if (newErrors?.length === 0) {
+                    setClientErrors(null)
+                } else if (newErrors) {
+                    setClientErrors(new z.ZodError(newErrors))
+                }
+            }
+        } else if (touched[field]) {
+            // If validation succeeds for this field, remove related errors
+            const newErrors = clientErrors?.errors.filter((err) => !err.path.includes(field))
+            if (newErrors?.length === 0) {
+                setClientErrors(null)
+            } else if (newErrors) {
+                setClientErrors(new z.ZodError(newErrors))
+            }
+        }
+    }
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value
+        setTitle(newValue)
+        if (touched.title) {
+            validateField("title", newValue)
+        }
+    }
+
+    const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newValue = e.target.value
+        setContent(newValue)
+        if (touched.content) {
+            validateField("content", newValue)
+        }
+    }
+
+    const handleDateSelect = (newDate: Date | undefined) => {
+        setDate(newDate)
+        if (touched.date) {
+            validateField("date", newDate)
+        }
+    }
+
+    const handleBlur = (field: keyof TouchedFields) => {
+        setTouched((prev) => ({ ...prev, [field]: true }))
+        validateField(field, field === "title" ? title : field === "content" ? content : date)
+    }
 
     const handleSubmit = async (formData: FormData) => {
         const validationResult = blogSchema.safeParse({
@@ -37,11 +109,12 @@ export default function CreateForm() {
 
         if (!validationResult.success) {
             setClientErrors(validationResult.error)
+            // Mark all fields as touched when submit fails
+            setTouched({ title: true, content: true, date: true })
             return
         }
 
         setClientErrors(null)
-
         await formAction(formData)
 
         if (!state.errors) {
@@ -62,9 +135,10 @@ export default function CreateForm() {
                                 name="title"
                                 placeholder="Enter title"
                                 value={title}
-                                onChange={(e) => setTitle(e.target.value)}
+                                onChange={handleTitleChange}
+                                onBlur={() => handleBlur("title")}
                             />
-                            {clientErrors?.errors?.find((err) => err.path.includes("title")) && (
+                            {touched.title && clientErrors?.errors?.find((err) => err.path.includes("title")) && (
                                 <p className="text-red-500">
                                     {clientErrors.errors?.find((err) => err.path.includes("title"))?.message}
                                 </p>
@@ -79,9 +153,10 @@ export default function CreateForm() {
                                 placeholder="Enter content"
                                 name="content"
                                 value={content}
-                                onChange={(e) => setContent(e.target.value)}
+                                onChange={handleContentChange}
+                                onBlur={() => handleBlur("content")}
                             />
-                            {clientErrors?.errors?.find((err) => err.path.includes("content")) && (
+                            {touched.content && clientErrors?.errors?.find((err) => err.path.includes("content")) && (
                                 <p className="text-red-500">
                                     {clientErrors.errors?.find((err) => err.path.includes("content"))?.message}
                                 </p>
@@ -100,19 +175,20 @@ export default function CreateForm() {
                                             "w-full justify-start text-left font-normal mt-1",
                                             !date && "text-muted-foreground"
                                         )}
+                                        onBlur={() => handleBlur("date")}
                                     >
                                         <CalendarIcon className="mr-2 h-4 w-4" />
                                         {date ? format(date, "PPP") : <span>Pick a date</span>}
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto p-0">
-                                    <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                                    <Calendar mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
                                 </PopoverContent>
                             </Popover>
                             <Input type="hidden" name="title" value={title} />
                             <Input type="hidden" name="content" value={content} />
                             <Input type="hidden" name="date" value={date ? date.toISOString() : ""} />
-                            {clientErrors?.errors?.find((err) => err.path.includes("date")) && (
+                            {touched.date && clientErrors?.errors?.find((err) => err.path.includes("date")) && (
                                 <p className="text-red-500">
                                     {clientErrors.errors?.find((err) => err.path.includes("date"))?.message}
                                 </p>

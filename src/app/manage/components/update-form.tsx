@@ -28,22 +28,104 @@ interface EditDialogProps {
     date: Date
 }
 
-export default function UpdateForm({ id, title, content, date }: EditDialogProps) {
+type TouchedFields = {
+    title: boolean
+    content: boolean
+    date: boolean
+}
+
+export default function UpdateForm({
+    id,
+    title: initialTitle,
+    content: initialContent,
+    date: initialDate,
+}: EditDialogProps) {
     const [state, formAction] = useActionState(updateBlog, initialState)
-    const [datePick, setDatePick] = useState<Date>(date)
+    const [clientErrors, setClientErrors] = useState<z.ZodError | null>(null)
+    const [title, setTitle] = useState(initialTitle)
+    const [content, setContent] = useState(initialContent)
+    const [date, setDate] = useState<Date>(initialDate)
+    const [touched, setTouched] = useState<TouchedFields>({
+        title: false,
+        content: false,
+        date: false,
+    })
+
+    const validateField = (field: keyof TouchedFields, value: any) => {
+        const dataToValidate = {
+            title: field === "title" ? value : title,
+            content: field === "content" ? value : content,
+            date: field === "date" ? (value ? value.toISOString() : "") : date ? date.toISOString() : "",
+        }
+
+        const validationResult = blogSchema.safeParse(dataToValidate)
+
+        if (!validationResult.success) {
+            const fieldError = validationResult.error.errors.find((err) => err.path.includes(field))
+            if (fieldError) {
+                setClientErrors(validationResult.error)
+            } else {
+                const newErrors = clientErrors?.errors.filter((err) => !err.path.includes(field))
+                if (newErrors?.length === 0) {
+                    setClientErrors(null)
+                } else if (newErrors) {
+                    setClientErrors(new z.ZodError(newErrors))
+                }
+            }
+        } else if (touched[field]) {
+            const newErrors = clientErrors?.errors.filter((err) => !err.path.includes(field))
+            if (newErrors?.length === 0) {
+                setClientErrors(null)
+            } else if (newErrors) {
+                setClientErrors(new z.ZodError(newErrors))
+            }
+        }
+    }
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value
+        setTitle(newValue)
+        if (touched.title) {
+            validateField("title", newValue)
+        }
+    }
+
+    const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const newValue = e.target.value
+        setContent(newValue)
+        if (touched.content) {
+            validateField("content", newValue)
+        }
+    }
+
+    const handleDateSelect = (newDate: Date | undefined) => {
+        if (newDate) {
+            setDate(newDate)
+            if (touched.date) {
+                validateField("date", newDate)
+            }
+        }
+    }
+
+    const handleBlur = (field: keyof TouchedFields) => {
+        setTouched((prev) => ({ ...prev, [field]: true }))
+        validateField(field, field === "title" ? title : field === "content" ? content : date)
+    }
 
     const handleSubmit = async (formData: FormData) => {
         const validationResult = blogSchema.safeParse({
-            title: formData.get("title"),
-            content: formData.get("content"),
-            date: formData.get("date"),
+            title: title,
+            content: content,
+            date: date ? date.toISOString() : "",
         })
 
         if (!validationResult.success) {
-            state.errors = validationResult.error
+            setClientErrors(validationResult.error)
+            setTouched({ title: true, content: true, date: true })
             return
         }
 
+        setClientErrors(null)
         await formAction(formData)
 
         if (!state.errors) {
@@ -57,18 +139,19 @@ export default function UpdateForm({ id, title, content, date }: EditDialogProps
                 <div className="grid space-y-4">
                     <div>
                         <Label htmlFor="title">Title</Label>
-                        <Input type="hidden" id="id" name="id" defaultValue={id} />
+                        <Input type="hidden" id="id" name="id" value={id} />
                         <Input
                             type="text"
                             id="title"
                             name="title"
                             placeholder="Enter title"
-                            defaultValue={title}
-                            required
+                            value={title}
+                            onChange={handleTitleChange}
+                            onBlur={() => handleBlur("title")}
                         />
-                        {state?.errors?.errors?.find((err) => err.path.includes("title")) && (
+                        {touched.title && clientErrors?.errors?.find((err) => err.path.includes("title")) && (
                             <p className="text-red-500">
-                                {state.errors?.errors?.find((err) => err.path.includes("title"))?.message}
+                                {clientErrors.errors?.find((err) => err.path.includes("title"))?.message}
                             </p>
                         )}
                     </div>
@@ -80,12 +163,13 @@ export default function UpdateForm({ id, title, content, date }: EditDialogProps
                             id="content"
                             placeholder="Enter content"
                             name="content"
-                            defaultValue={content}
-                            required
+                            value={content}
+                            onChange={handleContentChange}
+                            onBlur={() => handleBlur("content")}
                         />
-                        {state?.errors?.errors?.find((err) => err.path.includes("content")) && (
+                        {touched.content && clientErrors?.errors?.find((err) => err.path.includes("content")) && (
                             <p className="text-red-500">
-                                {state.errors?.errors?.find((err) => err.path.includes("content"))?.message}
+                                {clientErrors.errors?.find((err) => err.path.includes("content"))?.message}
                             </p>
                         )}
                     </div>
@@ -100,26 +184,24 @@ export default function UpdateForm({ id, title, content, date }: EditDialogProps
                                     variant={"outline"}
                                     className={cn(
                                         "w-full justify-start text-left font-normal mt-1",
-                                        !datePick && "text-muted-foreground"
+                                        !date && "text-muted-foreground"
                                     )}
+                                    onBlur={() => handleBlur("date")}
                                 >
                                     <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {datePick ? format(datePick, "PPP") : <span>Pick a date</span>}
+                                    {date ? format(date, "PPP") : <span>Pick a date</span>}
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0">
-                                <Calendar
-                                    mode="single"
-                                    selected={datePick}
-                                    onSelect={(day) => day && setDatePick(day)}
-                                    initialFocus
-                                />
+                                <Calendar mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
                             </PopoverContent>
                         </Popover>
-                        <Input type="hidden" name="date" value={datePick ? datePick.toISOString() : ""} />
-                        {state?.errors?.errors?.find((err) => err.path.includes("date")) && (
+                        <Input type="hidden" name="title" value={title} />
+                        <Input type="hidden" name="content" value={content} />
+                        <Input type="hidden" name="date" value={date ? date.toISOString() : ""} />
+                        {touched.date && clientErrors?.errors?.find((err) => err.path.includes("date")) && (
                             <p className="text-red-500">
-                                {state.errors?.errors?.find((err) => err.path.includes("date"))?.message}
+                                {clientErrors.errors?.find((err) => err.path.includes("date"))?.message}
                             </p>
                         )}
                     </div>
