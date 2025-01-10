@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 
 export default function SaveBtn() {
-  return <Button type="submit">Save</Button>;
+    return <Button type="submit">Save</Button>
 }
