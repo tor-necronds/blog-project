@@ -34,7 +34,8 @@ export default function UpdateForm({
   content,
   date,
 }: EditDialogProps) {
-  const [datepick, setDatepick] = useState<Date>();
+  const [newdate, setNewdate] = useState<Date>();
+  const [datepick , setDatepick] = useState<Date>(date);
   const [state, formAction] = useActionState(updateBlog, initialState);
 
   const data = { id, title, content, date };
@@ -85,14 +86,18 @@ export default function UpdateForm({
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    {newdate
+      ? format(newdate, "PPP")
+      : datepick
+      ? format(datepick, "PPP")
+      : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
                   <Calendar
                     mode="single"
-                    selected={datepick}
-                    onSelect={setDatepick}
+                    selected={newdate}
+                    onSelect={setNewdate}
                     initialFocus
                   />
                 </PopoverContent>
@@ -100,7 +105,7 @@ export default function UpdateForm({
               <Input
                 type="hidden"
                 name="date"
-                value={datepick ? datepick.toISOString() : ""}
+                value={newdate ? newdate.toISOString() : ""}
               />
             </div>
           </div>

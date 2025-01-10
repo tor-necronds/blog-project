@@ -18,7 +18,7 @@ export default function Blogcard({ title, content, date }: BlogcardProps) {
   const formattedDate = formatDate(date);
   return (
     <>
-      <Card className="">
+      <Card className="min-w-[300px]">
         <CardHeader>
           <CardTitle>{title}</CardTitle>
         </CardHeader>
