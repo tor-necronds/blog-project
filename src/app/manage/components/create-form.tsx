@@ -53,7 +53,6 @@ export default function CreateForm() {
             if (fieldError) {
                 setClientErrors(validationResult.error)
             } else {
-                // If no error for this field, remove related errors
                 const newErrors = clientErrors?.errors.filter((err) => !err.path.includes(field))
                 if (newErrors?.length === 0) {
                     setClientErrors(null)
@@ -62,7 +61,6 @@ export default function CreateForm() {
                 }
             }
         } else if (touched[field]) {
-            // If validation succeeds for this field, remove related errors
             const newErrors = clientErrors?.errors.filter((err) => !err.path.includes(field))
             if (newErrors?.length === 0) {
                 setClientErrors(null)

@@ -8,6 +8,7 @@ import Blogdetail from "./blog-detail";
 import useSWR from "swr";
 import { Input } from "@/components/ui/input";
 import { useQueryState } from "nuqs";
+
 export default function Blogs() {
   const [search, setSearch] = useQueryState<string>("search", {
     defaultValue: "",
@@ -22,11 +23,11 @@ export default function Blogs() {
   );
 
   if (isLoading) {
-    return;
+    return null;
   }
 
   if (error) {
-    return;
+    return null;
   }
 
   const filteredData = data.filter(
@@ -53,6 +54,7 @@ export default function Blogs() {
   console.log(data.length);
   return (
     <>
+
       <div className="flex flex-col items-center">
         <div className="bg-black max-w-[1200px] w-full min-h-[100vh] p-[20px] md:p-[50px]">
           <div className="flex items-center justify-between">
@@ -103,9 +105,12 @@ export default function Blogs() {
           </div>
         )
       )}
+
     </div>
+
   )
 }
+
         </div>
       </div>
       <Blogdetail
@@ -113,6 +118,7 @@ export default function Blogs() {
         blogId={selectedBlogId}
         onClose={() => setOpenDeatail(false)}
       />
+
     </>
   );
 }

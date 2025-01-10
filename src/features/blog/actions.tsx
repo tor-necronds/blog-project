@@ -2,6 +2,7 @@
 
 import { blogSchema } from "./schema"
 import { z } from "zod"
+import { revalidatePath } from "next/cache"
 
 export async function createBlog(
     prevState: {
@@ -26,6 +27,7 @@ export async function createBlog(
             }
         }
 
+        console.log(data)
         const response = await fetch("https://677e3ae094bde1c1252affe2.mockapi.io/blogs", {
             method: "POST",
             headers: {
@@ -33,11 +35,12 @@ export async function createBlog(
             },
             body: JSON.stringify(data),
         })
-
         const responseData = await response.json()
-        return { message: "Blog created successfully", data: responseData }
+        console.log(responseData)
+        revalidatePath("/manage")
+        return responseData
     } catch (error) {
-        return { message: "Failed to create blog", errors: null }
+        console.log(error)
     }
 }
 
@@ -74,7 +77,9 @@ export async function updateBlog(
         })
 
         const responseData = await response.json()
-        return { message: "Blog updated successfully", data: responseData }
+        console.log(responseData)
+        revalidatePath("/manage")
+        return responseData
     } catch (error) {
         return { message: "Failed to update blog", errors: null }
     }
@@ -105,6 +110,7 @@ export async function deleteBlog(
         }
         const responseData = await response.json()
         console.log("Deleted blog:", responseData)
+        revalidatePath("/manage")
         return responseData
     } catch (error) {
         console.error(error)
