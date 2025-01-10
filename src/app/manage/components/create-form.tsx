@@ -29,7 +29,6 @@ export default function CreateForm() {
     const [date, setDate] = useState<Date>()
 
     const handleSubmit = async (formData: FormData) => {
-        // Client-side validation
         const validationResult = blogSchema.safeParse({
             title: title,
             content: content,

@@ -17,7 +17,6 @@ export async function createBlog(
             date: formData.get("date") as string,
         }
 
-        // Server-side validation
         const validationResult = blogSchema.safeParse(data)
 
         if (!validationResult.success) {
@@ -57,7 +56,6 @@ export async function updateBlog(
             date: formData.get("date") as string,
         }
 
-        // Server-side validation
         const validationResult = blogSchema.safeParse(data)
 
         if (!validationResult.success) {
