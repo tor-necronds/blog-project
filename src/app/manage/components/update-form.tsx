@@ -33,7 +33,6 @@ export default function UpdateForm({ id, title, content, date }: EditDialogProps
     const [datePick, setDatePick] = useState<Date>(date)
 
     const handleSubmit = async (formData: FormData) => {
-        // Client-side validation
         const validationResult = blogSchema.safeParse({
             title: formData.get("title"),
             content: formData.get("content"),
