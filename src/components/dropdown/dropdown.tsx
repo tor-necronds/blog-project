@@ -13,9 +13,16 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export default function Dropdown() {
-    const [sort, setSort] = useState("new")
+interface DropdownProps {
+    onSortChange: (sort: string) => void;
+}
 
+export default function Dropdown({ onSortChange }: DropdownProps) {
+    const [sort, setSort] = useState("new")
+    const handleSortChange = (value: string) => {
+        setSort(value);
+        onSortChange(value);
+    };
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -24,7 +31,7 @@ export default function Dropdown() {
             <DropdownMenuContent className="w-56">
                 <DropdownMenuLabel>Sort Blogs</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup value={sort} onValueChange={setSort}>
+                <DropdownMenuRadioGroup value={sort} onValueChange={handleSortChange}>
                     <DropdownMenuRadioItem value="new">Newest Date</DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="old">Oldest Date</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>

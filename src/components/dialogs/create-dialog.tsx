@@ -11,6 +11,7 @@ import CreateForm from "../../app/manage/components/create-form";
 import Addbtn from "@/app/manage/components/add-btn";
 
 export default function CreateDialog() {
+  console.log("แสดงแล้ว")
   return (
     <Dialog>
       <DialogTrigger asChild>

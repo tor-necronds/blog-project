@@ -1,10 +1,14 @@
 
+interface CountProps {
+  data:string;
+}
+export default function Counting({data}:CountProps) {
 
-export default function Counting() {
+console.log(data)
   return (
     <>
-    <div className="text-[#FFFFFF] font-semibold text-[24px]">
-      Total Blogs : 6
+      <div className="text-[#FFFFFF] font-semibold text-[24px]">
+        Total Blogs : {data}
       </div>
     </>
   );
