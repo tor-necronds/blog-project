@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 // export async function updateBlog() {}
 
 export async function createBlog(
@@ -28,7 +30,9 @@ export async function createBlog(
     );
     const responseData = await reponse.json();
     console.log(responseData);
+    revalidatePath('/manage')
     return responseData;
+
   } catch (error) {
     console.log(error);
   }
@@ -61,6 +65,7 @@ export async function updateBlog(
       );
       const responseData = await reponse.json();
       console.log(responseData);
+      revalidatePath('/manage')
       return responseData;
     } catch (error) {
       console.log(error);
@@ -93,6 +98,7 @@ try{
   }
   const responseData = await response.json();
 console.log("Deleted blog:", responseData);
+revalidatePath('/manage')
 return responseData;
 
 }catch (error) {

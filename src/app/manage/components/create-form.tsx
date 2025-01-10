@@ -22,9 +22,10 @@ const initialState = {
 };
 
 export default function CreateForm() {
-  const [date, setDate] = useState<Date>();
 
+  const [date, setDate] = useState<Date>();
   const [state, formAction] = useActionState(createBlog, initialState);
+
 
   return (
     <>

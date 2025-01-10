@@ -1,30 +1,20 @@
-"use client"
-
 import Blogcard from "@/components/cards/blog-card";
 import React from "react";
 import Search from "@/components/search/search";
 import Deletebtn from "./delete-btn";
-import CreateDialog from "../../../components/dialogs/create-dialog";
+import CreateDialog from "@/components/dialogs/create-dialog";
 import EditDialog from "@/components/dialogs/edit-dialog";
-import useSWR from "swr";
 
-export default  function Manage() {
-    const { data, error, isLoading } = useSWR(
-        "https://677e3ae094bde1c1252affe2.mockapi.io/blogs"
-      );
+export default async function Manage() {
+      const data = await fetch("https://677e3ae094bde1c1252affe2.mockapi.io/blogs")
+      const blogs = await data.json()
 
-      if (isLoading) {
-        return;
-      }
+      console.log(blogs)
 
-      if (error) {
-        return;
-      }
-
-      console.log(data)
   return (
     <>
-      <div className="flex justify-center">
+
+       <div className="flex justify-center">
         <div className="bg-black max-w-[1200px] w-full min-h-[100vh] p-[20px] md:p-[50px]">
 
           <div className="flex items-center">
@@ -35,10 +25,12 @@ export default  function Manage() {
         <Search />
           </div>
  <div className="w-[100%] flex  pt-5">
- <CreateDialog />
+ <CreateDialog/>
           </div>
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8 lg:gap-5 pt-10">
-{data
+
+
+ {blogs
   .map(
     (blog: {
       id: string;
