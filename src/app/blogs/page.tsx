@@ -1,17 +1,9 @@
+import Blogs from "./components/blogs"
 
-import Blogs from "./components/blogs";
-
-
-export default  function Page() {
-
-
-
-
+export default function Page() {
     return (
         <>
-
-          <Blogs />
-
+            <Blogs />
         </>
     )
 }

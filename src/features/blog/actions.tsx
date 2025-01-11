@@ -85,34 +85,25 @@ export async function updateBlog(
     }
 }
 
-export async function deleteBlog(
-    prevState: {
-        message: string
-    },
-    formData: FormData
-) {
+export async function deleteBlog(id: string) {
     try {
-        const data = {
-            id: formData.get("id") as string,
-            title: formData.get("title") as string,
-            content: formData.get("content") as string,
-            date: formData.get("date") as string,
-        }
-
-        const response = await fetch(`https://677e3ae094bde1c1252affe2.mockapi.io/blogs/${data.id}`, {
+        const response = await fetch(`https://677e3ae094bde1c1252affe2.mockapi.io/blogs/${id}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },
         })
+
         if (!response.ok) {
             throw new Error("Failed to delete the blog post.")
         }
+
         const responseData = await response.json()
         console.log("Deleted blog:", responseData)
         revalidatePath("/manage")
         return responseData
     } catch (error) {
         console.error(error)
+        throw error
     }
 }

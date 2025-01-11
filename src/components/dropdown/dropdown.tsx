@@ -14,15 +14,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 interface DropdownProps {
-    onSortChange: (sort: string) => void;
+    onSortChange: (sort: string) => void
 }
 
 export default function Dropdown({ onSortChange }: DropdownProps) {
     const [sort, setSort] = useState("new")
     const handleSortChange = (value: string) => {
-        setSort(value);
-        onSortChange(value);
-    };
+        setSort(value)
+        onSortChange(value)
+    }
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
