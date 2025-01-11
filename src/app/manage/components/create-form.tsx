@@ -107,7 +107,6 @@ export default function CreateForm() {
 
         if (!validationResult.success) {
             setClientErrors(validationResult.error)
-            // Mark all fields as touched when submit fails
             setTouched({ title: true, content: true, date: true })
             return
         }
