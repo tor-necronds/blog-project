@@ -17,7 +17,10 @@ export function useBlogForm(initialFields?: FormFields) {
   const [clientErrors, setClientErrors] = useState<z.ZodError | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  const validateField = (field: keyof TouchedFields, value: any) => {
+  const validateField = (
+    field: keyof TouchedFields,
+    value: string | Date | undefined
+  ) => {
     const dataToValidate = {
       ...fields,
       [field]: value,

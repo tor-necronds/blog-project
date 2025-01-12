@@ -18,7 +18,10 @@ interface BlogFormFieldsProps {
   fields: FormFields
   touched: TouchedFields
   clientErrors: z.ZodError | null
-  onFieldChange: (field: keyof FormFields, value: any) => void
+  onFieldChange: (
+    field: keyof FormFields,
+    value: string | Date | undefined
+  ) => void
   onFieldBlur: (field: keyof TouchedFields) => void
   isPending: boolean
   submitText: string

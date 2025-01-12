@@ -42,8 +42,8 @@ export async function createBlog(
     console.log(responseData)
     revalidatePath('/manage')
     return responseData
-  } catch (error) {
-    console.log(error)
+  } catch {
+    return { message: 'Failed to create blog', errors: null }
   }
 }
 
@@ -86,7 +86,7 @@ export async function updateBlog(
     console.log(responseData)
     revalidatePath('/manage')
     return responseData
-  } catch (error) {
+  } catch {
     return { message: 'Failed to update blog', errors: null }
   }
 }
@@ -131,8 +131,7 @@ export async function fetchBlogs() {
     }
 
     return res.json()
-  } catch (error) {
-    console.error('Error fetching blogs:', error)
-    return []
+  } catch {
+    return { message: 'Error fetching blogs', errors: null }
   }
 }
