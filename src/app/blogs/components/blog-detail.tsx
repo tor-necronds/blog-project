@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   Dialog,
@@ -7,40 +7,42 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import useSWR from 'swr';
+} from '@/components/ui/dialog'
+import useSWR from 'swr'
 
 interface BlogProps {
-  blogId: string;
-  isOpen: boolean;
-  onClose: () => void;
+  blogId: string
+  isOpen: boolean
+  onClose: () => void
 }
-import { formatDate } from '../../../utils/format-date';
+import { formatDate } from '../../../utils/format-date'
 
 export default function BlogDetail({ blogId, isOpen, onClose }: BlogProps) {
   const { data, error, isLoading } = useSWR(
     `https://677e3ae094bde1c1252affe2.mockapi.io/blogs/${blogId}`
-  );
+  )
 
   if (isLoading) {
-    return;
+    return
   }
 
   if (error) {
-    return;
+    return
   }
 
-  const formattedDate = data ? formatDate(new Date(data.date)) : '';
-  console.log(data);
+  const formattedDate = data ? formatDate(new Date(data.date)) : ''
+  console.log(data)
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>{data.title}</DialogTitle>
-          <DialogDescription>{data.content}</DialogDescription>
+          <DialogTitle className="text-left mb-2">{data.title}</DialogTitle>
+          <DialogDescription className="text-left">
+            {data.content}
+          </DialogDescription>
         </DialogHeader>
-        <DialogFooter>{formattedDate}</DialogFooter>
+        <DialogFooter className="text-right">{formattedDate}</DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

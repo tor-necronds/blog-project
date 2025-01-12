@@ -1,71 +1,69 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import BlogCard from '@/components/cards/blog-card';
-import Dropdown from '@/components/dropdown/dropdown';
-import Counting from '../components/counting';
-import BlogDetail from './blog-detail';
-import useSWR from 'swr';
-import { Input } from '@/components/ui/input';
-import { useQueryState } from 'nuqs';
+import React, { useState } from 'react'
+import BlogCard from '@/components/cards/blog-card'
+import Dropdown from '@/components/dropdown/dropdown'
+import Counting from '../components/counting'
+import BlogDetail from './blog-detail'
+import useSWR from 'swr'
+import { useQueryState } from 'nuqs'
+import Search from '@/components/search/search'
 
 export default function Blogs() {
   const [search, setSearch] = useQueryState<string>('search', {
     defaultValue: '',
     parse: (value) => value || '',
     serialize: (value) => value,
-  });
-  const [openDetail, setOpenDetail] = useState<boolean>(false);
-  const [selectedBlogId, setSelectedBlogId] = useState<string>('');
-  const [sort, setSort] = useState<string>('new');
+  })
+  const [openDetail, setOpenDetail] = useState<boolean>(false)
+  const [selectedBlogId, setSelectedBlogId] = useState<string>('')
+  const [sort, setSort] = useState<string>('new')
   const { data, error, isLoading } = useSWR(
     'https://677e3ae094bde1c1252affe2.mockapi.io/blogs'
-  );
+  )
 
   if (isLoading) {
-    return null;
+    return null
   }
 
   if (error) {
-    return null;
+    return null
   }
 
   const filteredData = data.filter(
     (blog: { title: string; content: string }) =>
       blog.title.toLowerCase().includes(search.toLowerCase()) ||
       blog.content.toLowerCase().includes(search.toLowerCase())
-  );
+  )
 
   const handleOpenDetail = (id: string) => {
-    setOpenDetail(true);
-    setSelectedBlogId(id);
-  };
+    setOpenDetail(true)
+    setSelectedBlogId(id)
+  }
 
   const sortedData = filteredData.sort(
     (a: { date: string }, b: { date: string }) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
+      const dateA = new Date(a.date)
+      const dateB = new Date(b.date)
       return sort === 'new'
         ? dateB.getTime() - dateA.getTime()
-        : dateA.getTime() - dateB.getTime();
+        : dateA.getTime() - dateB.getTime()
     }
-  );
+  )
 
-  console.log(data.length);
+  console.log(data.length)
   return (
     <>
       <div className="flex flex-col items-center">
-        <div className="bg-black max-w-[1200px] w-full min-h-[100vh] p-[20px] md:p-[50px]">
+        <div className="bg-black max-w-full w-full min-h-[100vh] p-[20px] md:p-[50px]">
           <div className="flex items-center justify-between">
-            <div className="text-[36px] font-bold text-[#FFFFFF]">Blogs</div>
+            <div className="text-[36px] font-bold text-white">Blogs</div>
             <Counting data={sortedData.length} />
           </div>
           <div className="w-[100%] flex justify-end pt-5">
-            <Input
+            <Search
               value={search || ''}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by title or content..."
-              className="text-[#FFFFFF]"
+              onChange={(e) => setSearch(e.target.value || null)}
             />
           </div>
           <div className="w-[100%] flex justify-end pt-5">
@@ -73,24 +71,24 @@ export default function Blogs() {
           </div>
 
           {data.length === 0 ? (
-            <p className="text-[#FFFFFF] text-center mt-10">ไม่มีข้อมูล</p>
+            <p className="text-white text-center mt-10">ไม่มีข้อมูล</p>
           ) : filteredData.length === 0 ? (
-            <p className="text-[#FFFFFF] text-center mt-10">
+            <p className="text-white text-center mt-10">
               ไม่มีคำค้นหา &quot;{search}&quot; ที่คุณต้องการ
             </p>
           ) : (
-            <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 pt-10">
+            <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 lg:gap-6 pt-10">
               {filteredData.map(
                 (blog: {
-                  id: string;
-                  title: string;
-                  content: string;
-                  date: string;
+                  id: string
+                  title: string
+                  content: string
+                  date: string
                 }) => (
                   <div
                     key={blog.id}
                     onClick={() => handleOpenDetail(blog.id)}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:-translate-y-1 duration-300"
                   >
                     <BlogCard
                       key={blog.id}
@@ -111,5 +109,5 @@ export default function Blogs() {
         onClose={() => setOpenDetail(false)}
       />
     </>
-  );
+  )
 }

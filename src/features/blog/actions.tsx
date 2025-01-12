@@ -1,13 +1,13 @@
-'use server';
+'use server'
 
-import { blogSchema } from './schema';
-import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
+import { blogSchema } from './schema'
+import { z } from 'zod'
+import { revalidatePath } from 'next/cache'
 
 export async function createBlog(
   prevState: {
-    message: string;
-    errors?: z.ZodError | null;
+    message: string
+    errors?: z.ZodError | null
   },
   formData: FormData
 ) {
@@ -16,18 +16,18 @@ export async function createBlog(
       title: formData.get('title') as string,
       content: formData.get('content') as string,
       date: formData.get('date') as string,
-    };
+    }
 
-    const validationResult = blogSchema.safeParse(data);
+    const validationResult = blogSchema.safeParse(data)
 
     if (!validationResult.success) {
       return {
         message: 'Validation failed',
         errors: validationResult.error,
-      };
+      }
     }
 
-    console.log(data);
+    console.log(data)
     const response = await fetch(
       'https://677e3ae094bde1c1252affe2.mockapi.io/blogs',
       {
@@ -37,20 +37,20 @@ export async function createBlog(
         },
         body: JSON.stringify(data),
       }
-    );
-    const responseData = await response.json();
-    console.log(responseData);
-    revalidatePath('/manage');
-    return responseData;
+    )
+    const responseData = await response.json()
+    console.log(responseData)
+    revalidatePath('/manage')
+    return responseData
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
 }
 
 export async function updateBlog(
   prevState: {
-    message: string;
-    errors?: z.ZodError | null;
+    message: string
+    errors?: z.ZodError | null
   },
   formData: FormData
 ) {
@@ -60,15 +60,15 @@ export async function updateBlog(
       title: formData.get('title') as string,
       content: formData.get('content') as string,
       date: formData.get('date') as string,
-    };
+    }
 
-    const validationResult = blogSchema.safeParse(data);
+    const validationResult = blogSchema.safeParse(data)
 
     if (!validationResult.success) {
       return {
         message: 'Validation failed',
         errors: validationResult.error,
-      };
+      }
     }
 
     const response = await fetch(
@@ -80,14 +80,14 @@ export async function updateBlog(
         },
         body: JSON.stringify(data),
       }
-    );
+    )
 
-    const responseData = await response.json();
-    console.log(responseData);
-    revalidatePath('/manage');
-    return responseData;
+    const responseData = await response.json()
+    console.log(responseData)
+    revalidatePath('/manage')
+    return responseData
   } catch (error) {
-    return { message: 'Failed to update blog', errors: null };
+    return { message: 'Failed to update blog', errors: null }
   }
 }
 
@@ -101,18 +101,38 @@ export async function deleteBlog(id: string) {
           'Content-Type': 'application/json',
         },
       }
-    );
+    )
 
     if (!response.ok) {
-      throw new Error('Failed to delete the blog post.');
+      throw new Error('Failed to delete the blog post.')
     }
 
-    const responseData = await response.json();
-    console.log('Deleted blog:', responseData);
-    revalidatePath('/manage');
-    return responseData;
+    const responseData = await response.json()
+    console.log('Deleted blog:', responseData)
+    revalidatePath('/manage')
+    return responseData
   } catch (error) {
-    console.error(error);
-    throw error;
+    console.error(error)
+    throw error
+  }
+}
+
+export async function fetchBlogs() {
+  try {
+    const res = await fetch(
+      'https://677e3ae094bde1c1252affe2.mockapi.io/blogs',
+      {
+        next: { revalidate: 60 }, // cache นาที
+      }
+    )
+
+    if (!res.ok) {
+      throw new Error('Failed to fetch blogs')
+    }
+
+    return res.json()
+  } catch (error) {
+    console.error('Error fetching blogs:', error)
+    return []
   }
 }
