@@ -1,5 +1,6 @@
+'use client'
 
-import React from "react";
+import React, { useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -7,24 +8,27 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import CreateForm from "../../app/manage/components/create-form";
-import Addbtn from "@/app/manage/components/add-btn";
+} from '../ui/dialog'
+import CreateForm from '@/app/manage/components/create-form'
+import { Button } from '@/components/ui/button'
 
 export default function CreateDialog() {
-  console.log("แสดงแล้ว")
+  const [open, setOpen] = useState(false)
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Addbtn />
+        <Button variant="outline" type="submit">
+          Create Blog
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create blog</DialogTitle>
           <DialogDescription>Make create to your blog here.</DialogDescription>
         </DialogHeader>
-        <CreateForm />
+        <CreateForm onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
-  );
+  )
 }

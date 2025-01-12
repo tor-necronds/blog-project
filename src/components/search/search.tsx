@@ -1,5 +1,18 @@
-import { Input } from "@/components/ui/input"
+import { Input } from '@/components/ui/input'
 
-export default function Search() {
-    return <Input type="text" placeholder="Search ....." className="text-[#FFFFFF]" />
+interface SearchProps {
+  value: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+}
+
+export default function Search({ value, onChange }: SearchProps) {
+  return (
+    <Input
+      type="text"
+      placeholder="Search title or content..."
+      className="text-white"
+      value={value}
+      onChange={onChange}
+    />
+  )
 }

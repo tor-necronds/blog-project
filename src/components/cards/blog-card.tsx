@@ -1,34 +1,35 @@
-import React from "react";
+import React from 'react'
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { formatDate } from "../../utils/format-date";
-interface BlogcardProps {
-  key: string;
-  title: string;
-  content: string;
-  date: Date;
+} from '@/components/ui/card'
+import { formatDate } from '@/utils/format-date'
+import { truncateText } from '@/utils/text-utils'
+interface BlogCardProps {
+  key: string
+  title: string
+  content: string
+  date: Date
 }
 
-export default function Blogcard({ title, content, date }: BlogcardProps) {
-  const formattedDate = formatDate(date);
+export default function BlogCard({ title, content, date }: BlogCardProps) {
+  const formattedDate = formatDate(date)
+  const truncatedContent = truncateText(content)
+
   return (
     <>
-      <Card className="min-w-[300px]">
+      <Card className="min-w-3xl">
         <CardHeader>
           <CardTitle>{title}</CardTitle>
         </CardHeader>
-
-        <CardContent>{content}</CardContent>
-
+        <CardContent>{truncatedContent}</CardContent>
         <CardFooter className="flex justify-end text-[14px]">
           {formattedDate}
         </CardFooter>
       </Card>
     </>
-  );
+  )
 }
